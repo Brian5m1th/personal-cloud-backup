@@ -1,0 +1,68 @@
+services:
+  postgres-nextcloud:
+    image: postgres:17.5
+    container_name: postgres-nextcloud
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/postgres-nextcloud:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: ${POSTGRES_NEXTCLOUD_PASSWORD}
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  redis-nextcloud:
+    image: redis:7.4.2
+    container_name: redis-nextcloud
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/redis-nextcloud:/data
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  postgres-immich:
+    image: postgres:17.5
+    container_name: postgres-immich
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/postgres-immich:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: immich
+      POSTGRES_USER: immich
+      POSTGRES_PASSWORD: ${POSTGRES_IMMICH_PASSWORD}
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  redis-immich:
+    image: redis:7.4.2
+    container_name: redis-immich
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/redis-immich:/data
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+networks:
+  personal-cloud:
+    external: true
