@@ -1,0 +1,49 @@
+services:
+  ntfy:
+    image: binwiederhier/ntfy:v2.11.0
+    container_name: ntfy
+    restart: unless-stopped
+    command: serve
+    volumes:
+      - /srv/personal-cloud/apps/volumes/ntfy:/etc/ntfy
+      - /srv/personal-cloud/apps/volumes/ntfy/cache:/var/cache/ntfy
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v1.2.0
+    container_name: homepage
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1.23.16
+    container_name: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/uptime-kuma:/app/data
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+networks:
+  personal-cloud:
+    external: true
