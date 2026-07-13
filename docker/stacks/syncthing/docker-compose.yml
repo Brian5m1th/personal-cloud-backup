@@ -1,0 +1,22 @@
+services:
+  syncthing:
+    image: syncthing/syncthing:1.28.1
+    container_name: syncthing
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/syncthing/config:/var/syncthing/config
+      - /srv/personal-cloud/apps/volumes/syncthing/data:/var/syncthing/data
+      - /srv/personal-cloud/media:/media:ro
+      - /srv/personal-cloud/documents:/documents:ro
+      - /srv/personal-cloud/photos:/photos:ro
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+networks:
+  personal-cloud:
+    external: true

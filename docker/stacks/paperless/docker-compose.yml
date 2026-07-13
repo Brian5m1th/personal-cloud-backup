@@ -1,0 +1,28 @@
+services:
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.15.1
+    container_name: paperless
+    restart: unless-stopped
+    volumes:
+      - /srv/personal-cloud/apps/volumes/paperless/data:/usr/src/paperless/data
+      - /srv/personal-cloud/apps/volumes/paperless/media:/usr/src/paperless/media
+      - /srv/personal-cloud/apps/volumes/paperless/consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://redis-nextcloud:6379
+      PAPERLESS_DBHOST: postgres-nextcloud
+      PAPERLESS_DBNAME: paperless
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
+      PAPERLESS_URL: https://docs.kaostech.com.br
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY}
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+networks:
+  personal-cloud:
+    external: true
