@@ -1,0 +1,21 @@
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:2026.7.0
+    container_name: personal-cloud-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    volumes:
+      - /srv/personal-cloud/apps/volumes/cloudflared:/home/nonroot/.cloudflared
+    networks:
+      - personal-cloud
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  personal-cloud:
+    external: true
