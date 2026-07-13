@@ -1,0 +1,70 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [],
+  "mcp": {
+    "filesystem": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\workspace\\Extras\\personal-cloud-backup"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "docker": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "docker-mcp"
+      ],
+      "enabled": false,
+      "environment": {
+        "DOCKER_MCP_LOCAL": "true"
+      }
+    },
+    "fetch": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-fetch-server"
+      ]
+    },
+    "memory": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "cloudflare": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@cloudflare/mcp-server-cloudflare"
+      ],
+      "environment": {
+        "CLOUDFLARE_API_TOKEN": "${secrets.cloudflare.api_token}"
+      }
+    },
+    "ssh": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-server-ssh"
+      ]
+    }
+  }
+}
