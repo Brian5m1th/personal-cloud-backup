@@ -1,0 +1,43 @@
+========================================
+ PERSONAL CLOUD & BACKUP — CREDENCIAIS (TEMPLATE)
+========================================
+Data: 2026-07-14
+Servidor: <IP-DO-SERVIDOR>
+Usuario SSH: dev
+Chave SSH: /home/dev/.ssh/id_ed25519
+========================================
+
+--- BANCO DE DADOS ---
+
+PostgreSQL Nextcloud:
+  Usuario: nextcloud
+  Senha: <senha>
+  Banco: nextcloud
+
+PostgreSQL Immich:
+  Usuario: immich
+  Senha: <senha>
+  Banco: immich
+
+--- NEXTCLOUD ---
+URL: https://drive.kaostech.com.br
+Admin: admin / <senha>
+
+--- MINIO ---
+URL: https://storage.kaostech.com.br
+Usuario: <access-key>
+Senha: <secret-key>
+
+--- RESTIC ---
+Senha: <senha>
+
+--- PAPERLESS ---
+Senha DB: <senha>
+
+--- SYNCTHING ---
+Server ID: <server-device-id>
+PC ID: <pc-device-id>
+
+========================================
+* O arquivo real esta em /srv/personal-cloud/CREDENCIAIS.txt (chmod 600)
+* NUNCA versionar o arquivo real no Git
