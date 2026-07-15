@@ -37,3 +37,7 @@ backups/data/
 
 # Docker
 docker-volumes/
+
+# Generated audit docs
+auditoria-completa-ubuntu.md
+IMPLEMENTATION_PLAN_FINAL.md
