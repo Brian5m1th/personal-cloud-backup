@@ -6,40 +6,63 @@
 
 ## Acesso
 
+- **Sincronia:** Porta 22000 TCP/UDP (exposta no host + UFW)
+- **Descoberta:** Porta 21027 UDP
 - **GUI:** API interna na rede Docker (porta 8384)
-- **Sincronia:** Portas 22000 (TCP/UDP) + 21027 (UDP)
-- **Protocolo:** LAN + descoberta global
 
 ## Configuração
 
-### Adicionar dispositivo
+### Device ID do Servidor
 
-1. No servidor, obter o Device ID:
-   ```bash
-   docker exec syncthing grep device /var/syncthing/config/config.xml | head -1
-   ```
-   Atual: `7YL6ACB-XY2PIGC-VHLB6HV-UAGJ364-4Q66XQZ-2AJMANX-LYK6T44-MVTSZQM`
+```
+7YL6ACB-XY2PIGC-VHLB6HV-UAGJ364-4Q66XQZ-2AJMANX-LYK6T44-MVTSZQM
+```
 
-2. No cliente (PC/celular), adicionar dispositivo remoto com este ID.
+### Adicionar dispositivo no servidor (via terminal)
 
-3. Compartilhar pastas desejadas.
+```bash
+PC_ID="ID-DO-DEVICE-PC"
+docker stop syncthing
+CONFIG="/srv/personal-cloud/apps/volumes/syncthing/config/config.xml"
+sudo sed -i "s|</configuration>|<device id=\"$PC_ID\" compression=\"metadata\" introducer=\"false\" skipIntroductionRemovals=\"false\" name=\"PC-Nome\"><address>dynamic</address></device>\n</configuration>|" "$CONFIG"
+docker start syncthing
+```
 
-### Pastas compartilhadas no servidor
+### Adicionar servidor no cliente (PC)
 
-| Pasta | Caminho no servidor | Modo |
-|-------|--------------------|------|
-| Default Folder | `/srv/personal-cloud/apps/volumes/syncthing/data` | sendreceive |
+1. Abrir Syncthing
+2. **Add Remote Device** → colar ID do servidor
+3. Em **Addresses**, adicionar: `tcp://<ip-do-servidor>:22000`
+4. Salvar
+
+### Verificar conexão
+
+```bash
+docker logs syncthing 2>&1 | grep "Established secure connection"
+```
+
+Exemplo de saída bem-sucedida:
+```
+Established secure connection to 4VVDHDB at 172.31.0.6:22000-192.168.100.27:22000/tcp-client/TLS1.3-...
+```
+
+## Pastas
+
+As pastas compartilhadas são configuradas pelo cliente. O servidor aceita automaticamente se `Aceitar automaticamente` estiver ativo.
 
 ## Docker
 
 ```yaml
-# docker/stacks/syncthing/docker-compose.yml
 services:
   syncthing:
     image: syncthing/syncthing:1.28.1
     container_name: syncthing
     restart: unless-stopped
     user: "1000:1000"
+    ports:
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
     volumes:
       - /srv/personal-cloud/apps/volumes/syncthing/config:/var/syncthing/config
       - /srv/personal-cloud/apps/volumes/syncthing/data:/var/syncthing/data
@@ -47,20 +70,29 @@ services:
 
 ## Troubleshooting
 
-### "permission denied" no cert.pem
+### "permission denied" — cert.pem
 
-O container Syncthing roda como UID 1000. Corrigir:
 ```bash
 sudo chown -R 1000:1000 /srv/personal-cloud/apps/volumes/syncthing/
 docker restart syncthing
 ```
 
-### "4 restarts in 4 seconds"
+### "connection refused" no cliente
 
-Mesmo problema de permissão acima.
+Verificar:
+```bash
+# Porta esta escutando?
+ss -tlnp | grep 22000
+
+# UFW liberado?
+sudo ufw status | grep 22000
+
+# IP correto?
+hostname -I
+```
 
 ## Clientes
 
 - **Windows/Linux/macOS:** https://syncthing.net
 - **Android:** Play Store → "Syncthing" (ícone laranja)
-- **iOS:** Syncthing não disponível oficialmente. Alternativa: Möbius Sync
+- **iOS:** Alternativa: Möbius Sync
