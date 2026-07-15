@@ -3,6 +3,7 @@ services:
     image: syncthing/syncthing:1.28.1
     container_name: syncthing
     restart: unless-stopped
+    user: "1000:1000"
     volumes:
       - /srv/personal-cloud/apps/volumes/syncthing/config:/var/syncthing/config
       - /srv/personal-cloud/apps/volumes/syncthing/data:/var/syncthing/data
