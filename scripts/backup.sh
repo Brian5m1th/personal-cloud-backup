@@ -1,6 +1,10 @@
 #!/bin/bash
 # backup.sh — Personal Cloud & Backup
 # Reproduzivel: copie .env.backup.example para .env.backup e configure
+# Notificacoes: integrado com notify.sh + ntfy
+
+NOTIFY_SCRIPT="$(cd "$(dirname "$0")" && pwd)/notify.sh"
+notify() { [ -x "$NOTIFY_SCRIPT" ] && "$NOTIFY_SCRIPT" "$1" "$2"; }
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/.env.backup"
@@ -45,4 +49,5 @@ run_restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune 2>&1 |
 run_restic check --no-lock 2>&1 | tee -a "$LOG_DIR/backup.log"
 
 find /tmp -name "*.dump" -mtime +7 -delete
+notify success "Backup concluido (${DATE})"
 echo "[$(date +%Y%m%d-%H%M)] Backup concluido" | tee -a "$LOG_DIR/backup.log"
